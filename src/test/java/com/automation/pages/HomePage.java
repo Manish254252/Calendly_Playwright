@@ -3,162 +3,170 @@ package com.automation.pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.SelectOption;
 
+import java.util.List;
+
 
 public class HomePage extends BasePage {
 
-    Locator flightSection = page.locator("//a[@aria-controls='search_form_product_selector_flights']");
-    Locator oneWayFlight = page.locator("//a[@aria-controls='FlightSearchForm_ONE_WAY']");
 
-    Locator sourceButton = page.locator("//button[@data-stid='origin_select-menu-trigger']");
-    Locator sourceInput = page.locator("//input[@data-stid='origin_select-menu-input']");
-    Locator searchSuggest = page.locator("(//button[@data-stid='destination_form_field-result-item-button'])[1]");
-    Locator destinationButton = page.locator("//button[@data-stid='destination_select-menu-trigger']");
-    Locator destinationInput = page.locator("//input[@data-stid='destination_select-menu-input']");
+    Locator newEventTypeButton;
 
 
-    Locator dateButton = page.locator("//button[@data-testid='uitk-date-selector-input1-default']");
-    Locator dateSelected = page.locator("(//div[text()='30'])[1]");
-
-    Locator doneButton = page.locator("//button[@data-stid='apply-date-selector']");
-
-    Locator travellerButton = page.locator("//button[@data-stid='open-room-picker']");
+    Locator createBtn;
 
 
-
-    Locator childOneAgeSelector = page.locator("#age-traveler_selector_children_age_selector-0");
-    Locator childTwoAgeSelector = page.locator("#age-traveler_selector_children_age_selector-1");
-
-    Locator doneButtonAfter = page.locator("#travelers_selector_done_button");
-    Locator searchButton = page.locator("#search_button");
-
-    Locator priceOfDay = page.locator("//button[@aria-label='Monday, September 30 2024, $48, Lowest price, Selected date']/span[contains(text(),'$')]");
-    Locator sortSelector = page.locator("#sort-filter-dropdown-SORT");
-    Locator firstFlightButton = page.locator("//button[@stid='FLIGHTS_DETAILS_AND_FARES-index-1-leg-0-fsr-FlightsActionButton']");
-    Locator priceOfCheapestFlight = page.locator("(//section/span)[1]");
-
-    Locator whereTo = page.locator("//button[@data-stid=\"destination_form_field-menu-trigger\"]");
-    Locator whereToinput = page.locator("//input[@data-stid=\"destination_form_field-menu-input\"]");
-    String fromDateLocator = "//div[contains(@aria-label, '%s')]";
-    String toDateLocator ="//div[contains(@aria-label, '%s')]";
+    List<Locator> eventNamesList;
 
 
-    public void openWebsite() {
-        page.navigate("https://www.expedia.com");
-        page.waitForTimeout(20000);
-        page.waitForLoadState();
+    List<Locator> eventDurationList;
+
+
+    List<Locator> eventBookingPageLink;
+
+
+    List<Locator> settingOptions;
+
+
+    Locator availabilityLink;
+
+
+    Locator meetingsLink;
+
+
+    Locator routingLink;
+
+
+    Locator profileIconBtn;
+
+
+    Locator deleteConfirmBtn;
+
+
+    Locator profileLink;
+
+    static int noOfEventsBeforeDeletion;
+    static int noOfEventsAfterDeletion;
+
+    public HomePage() {
+        newEventTypeButton = page.locator("//div[contains(@class,'list-header')]//span[contains(text(),'New Event Type')]");
+        createBtn = page.locator("#home-bar-create-button");
+        eventNamesList = page.locator("//div[@data-component='sortable']//h2").all();
+        eventDurationList = page.locator(" //div[@data-component='sortable']//p").all();
+        eventBookingPageLink = page.locator("//div[@data-component='sortable']//div/a").all();
+        settingOptions = page.locator(" //div[@data-component='sortable']//h2/ancestor::div[@data-component='event-type-card-list']//button[@aria-expanded]").all();
+        availabilityLink = page.locator("    //div[@data-calendly-label='left-nav-main-items-container']//span[contains(text(),'Availability')]");
+        meetingsLink = page.locator(" //div[@data-calendly-label='left-nav-main-items-container']//span[contains(text(),'Meetings')]");
+        routingLink = page.locator("//div[@data-calendly-label='left-nav-main-items-container']//span[contains(text(),'Routing')]");
+        deleteConfirmBtn = page.locator("//button/span[text()='Yes']");
+        profileLink = page.locator("//div[@id='main-user-menu']//div/a/div[contains(text(),'Profile')]");
+        profileIconBtn = page.locator("#main-user-menu-toggle");
     }
 
-    public void selectFlightSection() {
-        flightSection.click();
+
+    public void clickOnNewEventTypeButton() {
+        newEventTypeButton.click();
     }
 
-    public void clickOnOneWay() {
-        oneWayFlight.click();
+    public boolean isCreateBtnDisplayed() {
+        return createBtn.isVisible();
     }
 
-    public void clickOnSource() {
-        sourceButton.click();
+    public boolean isEventListedOnHomePage(String eventName, String eventDuration) {
+        boolean isEventPresent = false;
+        boolean isDurationPresent = false;
+
+
+        for (Locator event : eventNamesList) {
+
+            if (isPresent(event)) {
+                if (event.innerText().contains(eventName)) {
+                    isEventPresent = true;
+                    break;
+                }
+            }
+        }
+        if (eventDuration.equals("60 min")) {
+            eventDuration = "1 hr";
+        }
+        for (Locator event : eventDurationList) {
+            if (event.innerText().contains(eventDuration)) {
+                isDurationPresent = true;
+                break;
+            }
+        }
+
+        return isEventPresent && isDurationPresent;
     }
 
-    public void enterFlightOrigin(String data) {
-        sourceInput.fill(data);
-        page.keyboard().press("Enter");
-//        searchSuggest.click();
-    }
+    boolean eventsDeleted = false;
 
-    public void clickOnDestination() {
-        destinationButton.click();
-    }
+    public void deleteEventsOfName(String eventName) {
 
-    public void enterFlightDestination(String data) {
-        destinationInput.fill(data);
-        page.keyboard().press("Enter");
-//        searchSuggest.click();
-    }
+        while (!eventsDeleted) {
+            List<Locator> eventNamesList = page.locator("//div[@data-component='sortable']//h2").all();
+            List<Locator> settingOptions = page.locator("//div[@data-component='sortable']//h2/ancestor::div[@data-component='event-type-card-list']//button[@aria-expanded]").all();
+            noOfEventsBeforeDeletion = eventNamesList.size();
+            if (eventNamesList.size() != settingOptions.size()) {
+                continue;
+            }
+            for (int i = 0; i < eventNamesList.size(); i++) {
 
-    public void clickOnDateButton() {
-        dateButton.click();
-    }
+                try {
+                    Locator eventNameElement = eventNamesList.get(i);
+                    Locator settingOptionElement = settingOptions.get(i);
 
-    public void clickOnDateSelected() {
-        dateSelected.click();
-    }
-    public void clickOnDone()
-    {
-        doneButton.click();
-    }
-    public void clickTraveller()
-    {
-        travellerButton.click();
-    }
+                    if (eventNameElement.innerText().equals(eventName)) {
+                        settingOptionElement.click();
+                        Locator deleteButton = settingOptionElement.locator("//div[@data-component='event-type-card-list']//button[@aria-expanded]/following-sibling::div//button/div[text()='Delete']");
+                        deleteButton.click();
+                        deleteConfirmBtn.click();
 
-    public void selectNumberOfAdults(String number)
-    {
-        int count =Integer.parseInt(number);
-        count--;
-        while ((count>0))
-        {
-            Locator adultsButton = page.locator("(//button[@class='uitk-layout-flex-item uitk-step-input-touch-target'][2])[1]");
-            adultsButton.click();
-            count--;
+                        eventsDeleted = true;
+
+                        break;
+                    }
+                } catch (Exception e) {
+                    eventsDeleted = true;
+                    break;
+                }
+            }
         }
     }
 
-    public void selectNumberOfChildren(String number)
-    {
-        int count =Integer.parseInt(number);
-//        count--;
-        while ((count>0))
-        {
-            Locator childButton = page.locator("(//button[@class='uitk-layout-flex-item uitk-step-input-touch-target'][2])[2]");
-            childButton.click();
-            count--;
+    public boolean isEventDeleted(String eventName) {
+
+        return eventsDeleted;
+
+    }
+
+    public void clickOnBookingEventLink(String eventName, String eventDuration) {
+        for (int i = 0; i < eventBookingPageLink.size(); i++) {
+            if (eventNamesList.get(i).innerText().equals(eventName) && eventDurationList.get(i).innerText().contains(eventDuration)) {
+                eventBookingPageLink.get(i).click();
+                break;
+            }
         }
-        childOneAgeSelector.selectOption(new SelectOption().setLabel("10"));
-        childTwoAgeSelector.selectOption(new SelectOption().setLabel("10"));
-    }
-    public void clickDoneButtonAfter()
-    {
-        doneButtonAfter.click();
     }
 
-    public void clickSearch()
-    {
-        searchButton.click();
-        try {
-            Thread.sleep(80000);
-        }catch (Exception e)
-        {
-
-        }
-
-    }
-    public boolean isPriceSame() {
-        System.out.println("in is peice");
-//        System.out.println(priceOfDay.innerText());
-        sortSelector.selectOption(new SelectOption().setLabel("Price (lowest to highest)"));
-        firstFlightButton.click();
-        System.out.println(priceOfCheapestFlight.innerText());
-        return  true;
+    public void clickOnAvailabilityButton() {
+        availabilityLink.click();
     }
 
-    public void clickOnWhereTo()
-    {
-        whereTo.click();
+    public void clickOnMeetingLink() {
+        meetingsLink.click();
     }
 
-    public void enterWhereTo(String data)
-    {
-        whereToinput.fill(data);
-        page.keyboard().press("Enter");
+    public void clickOnProfileIcon() {
+        profileIconBtn.click();
     }
 
-    public void fromDate(String data)
-    {
-        page.locator(String.format(fromDateLocator,data));
+    public void clickOnProfileLink() {
+        profileLink.click();
     }
-    public void toDate(String data)
-    {
-        page.locator(String.format(toDateLocator,data));
+
+    public void clickOnRoutingLink() {
+        routingLink.click();
     }
+
+
 }

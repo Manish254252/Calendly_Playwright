@@ -1,18 +1,12 @@
 package com.automation.utils;
 
 
-
-
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-
-import java.io.File;
-import java.io.IOException;
+import com.microsoft.playwright.Page;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class ExtentReportManager {
@@ -41,20 +35,17 @@ public class ExtentReportManager {
     }
 
     public static void attachScreenShot() {
+        System.out.println("screenshot attached");
         extentTest.addScreenCaptureFromPath(takeScreenShot());
     }
 
     public static String takeScreenShot() {
-        TakesScreenshot screenshot = (TakesScreenshot) DriverManager.getDriver();
-        File file = screenshot.getScreenshotAs(OutputType.FILE);
+        Page page = DriverManager.getPage();
+
         Random num = new Random();
         int n = num.nextInt(100);
         String path = "src/test/resources/screenshots/screenshot" + n + ".png";
-        try {
-            FileUtils.copyFile(file, new File(path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(path)));
         return System.getProperty("user.dir") + "/" + path;
     }
 }
