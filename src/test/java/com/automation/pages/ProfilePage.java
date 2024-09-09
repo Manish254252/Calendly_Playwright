@@ -1,7 +1,7 @@
 package com.automation.pages;
 
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
+
 
 import java.nio.file.Paths;
 
