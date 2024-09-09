@@ -33,7 +33,7 @@ public class ContactPage extends BasePage {
     public ContactPage() {
 
         contactsSection = page.locator("//span[text()='Contacts']");
-        addToContactIcon = page.locator("//div[@data-component='home-content']//button/span");
+        addToContactIcon = page.locator("(//div[@data-component='home-content']//button/span)[1]");
         firstName = page.locator("(//form//input)[2]");
         email = page.locator("(//form//input)[3]");
         timeZone = page.locator("//button[@aria-controls='timezone-picker']");
@@ -41,7 +41,8 @@ public class ContactPage extends BasePage {
         indianStandardTime = page.locator("//div[text()='India Standard Time']");
         phoneNumber = page.locator("(//form//input)[4]");
         saveContactBtn = page.locator("//span[text()='Save contact']");
-        contactNameAfterSave = page.locator("((//tr)[2]/td//div[text()])[1]");
+
+        contactNameAfterSave = page.locator("//tbody//tr/td[2]/div//div/button/following-sibling::div").all().getLast();
         contactProfileCloseButton = page.locator("#contact_profile_close_button");
         rows = page.locator("//tr[@class='r15404cu']").all();
         editBtn = page.locator("//div[text()='Edit']");
@@ -62,7 +63,7 @@ public class ContactPage extends BasePage {
     }
 
     public void clickOnIndianTimeZone() {
-        indianStandardTime.click();
+//        indianStandardTime.click();
     }
 
     public void clickOnSaveContactBtn() {
@@ -80,6 +81,7 @@ public class ContactPage extends BasePage {
     public void enterEmail(String data) {
         String emailRandom = getRandomEmail();
         ConfigWriter.writeToPropertiesFile(data, emailRandom);
+        System.out.println(emailRandom);
         email.fill(emailRandom);
     }
 
@@ -89,6 +91,7 @@ public class ContactPage extends BasePage {
     }
 
     public void enterPhoneNumber(String data) {
+        System.out.println(data);
         phoneNumber.fill(data);
     }
 
@@ -98,7 +101,10 @@ public class ContactPage extends BasePage {
 
     public boolean isContactSaved(String contactName) {
         clickOnContactProfileCloseButton();
-        return contactNameAfterSave.textContent().contains(contactName);
+        page.waitForTimeout(3000);
+        System.out.println(contactNameAfterSave.innerText()+"text content");
+        System.out.println(contactNameAfterSave.innerText().contains(contactName));
+        return contactNameAfterSave.innerText().contains(contactName);
     }
 
     public void removeSpecifiedContact(String name, String email) {

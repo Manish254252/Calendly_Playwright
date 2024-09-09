@@ -2,6 +2,7 @@ package com.automation.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 
 public class LandingPage extends BasePage {
 
@@ -16,7 +17,8 @@ public class LandingPage extends BasePage {
 
     // Open the website
     public void openWebsite() {
-        page.navigate("https://calendly.com/");
+        page.navigate("https://calendly.com/", new Page.NavigateOptions().setTimeout(60000));
+
     }
 
     // Click on the login link

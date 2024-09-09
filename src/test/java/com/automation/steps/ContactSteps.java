@@ -83,7 +83,7 @@ public class ContactSteps {
     @Then("verify the contact {string} is successfully added to the contact list")
     public void verify_the_contact_is_successfully_added_to_the_contact_list(String string) {
         string = ConfigReader.getConfigValue(string);
-        System.out.println(string);
+        System.out.println(string +"verify");
         Assert.assertTrue(contactPage.isContactSaved(string));
     }
 

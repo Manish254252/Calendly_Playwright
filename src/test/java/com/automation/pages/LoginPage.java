@@ -4,6 +4,7 @@ import com.microsoft.playwright.Page;
 
 
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 
 public class LoginPage extends BasePage {
@@ -16,7 +17,7 @@ public class LoginPage extends BasePage {
     Locator cookieAccept;
 
     public LoginPage() {
-        // Initializing locators
+
         loginBtn = page.locator("//button[@data-testid='primary-button']");
         emailInput = page.locator("//div[@data-testid='email-input']/input");
         passwordInput = page.locator("//form//input");
@@ -25,37 +26,39 @@ public class LoginPage extends BasePage {
         cookieAccept = page.locator("#onetrust-accept-btn-handler");
     }
 
-    // Enter email
+
     public void enterEmail(String email) {
         emailInput.fill(email);
     }
 
-    // Enter password
+
     public void enterPassword(String password) {
         passwordInput.fill(password);
     }
 
-    // Click on the login button
+
     public void clickOnLoginBtn() {
         loginBtn.click();
     }
 
-    // Check if the login button is displayed
+
     public boolean isLoginBtnDisplayed() {
+
+        page.waitForSelector("//button[@data-testid='primary-button']",new Page.WaitForSelectorOptions().setState(WaitForSelectorState.VISIBLE));
         return loginBtn.isVisible();
     }
 
-    // Check if "No such account" message is displayed
+
     public boolean isNoSuchAccountDisplayed() {
         return noSuchAccount.isVisible();
     }
 
-    // Click on the Continue button
+
     public void clickOnContinue() {
         continueBtn.click();
     }
 
-    // Accept cookies
+
     public void acceptCookies() {
         cookieAccept.click();
     }

@@ -5,6 +5,7 @@ import com.automation.utils.CucumberReportManager;
 import com.automation.utils.DriverManager;
 import com.automation.utils.ExtentReportManager;
 import io.cucumber.java.After;
+import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
@@ -19,12 +20,17 @@ public class Hooks {
         ExtentReportManager.createTest(scenario.getName());
     }
 
+    @AfterStep
+    public void delay() {
+        DriverManager.getPage().waitForTimeout(1000);
+    }
+
     @After
     public void cleanUp(Scenario scenario) {
         if (scenario.isFailed()) {
             ExtentReportManager.attachScreenShot();
             CucumberReportManager.attachScreenShot();
-            ExtentReportManager.getExtentTest().fail(scenario.getName()+" Failed");
+            ExtentReportManager.getExtentTest().fail(scenario.getName() + " Failed");
 
         }
         DriverManager.close();

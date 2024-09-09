@@ -16,4 +16,4 @@ Feature: Testing of CreateContact feature
     And user selects "contact.timezone" as the timezone for the contact
     And user enters "contact.phoneNo" as the phone number for the contact
     And user clicks on the Save Contact button
-    Then verify the contact "contact.firstname" is successfully added to the contact list
+    Then verify the contact "contact.email" is successfully added to the contact list

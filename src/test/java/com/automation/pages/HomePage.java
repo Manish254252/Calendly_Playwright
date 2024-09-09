@@ -1,7 +1,10 @@
 package com.automation.pages;
 
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.SelectOption;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 import java.util.List;
 
@@ -68,6 +71,7 @@ public class HomePage extends BasePage {
     }
 
     public boolean isCreateBtnDisplayed() {
+        page.waitForSelector("#home-bar-create-button",new Page.WaitForSelectorOptions().setState(WaitForSelectorState.VISIBLE));
         return createBtn.isVisible();
     }
 
