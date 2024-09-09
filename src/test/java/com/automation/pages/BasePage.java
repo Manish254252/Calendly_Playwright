@@ -6,6 +6,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 import java.util.List;
+import java.util.Random;
 
 
 public class BasePage {
@@ -25,6 +26,25 @@ public class BasePage {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String getRandomEmail() {
+        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder email = new StringBuilder();
+
+        Random random = new Random();
+
+
+        int usernameLength = 8 + random.nextInt(5);
+        for (int i = 0; i < usernameLength; i++) {
+            email.append(characters.charAt(random.nextInt(characters.length())));
+        }
+
+
+        String[] domains = {"gmail.com", "hotmail.com", "fakemail.net", "sample.org", "mockemail.co"};
+        email.append("@").append(domains[random.nextInt(domains.length)]);
+
+        return email.toString();
     }
 
     public void switchTab() {
