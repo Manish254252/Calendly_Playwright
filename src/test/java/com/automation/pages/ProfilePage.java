@@ -17,10 +17,10 @@ public class ProfilePage extends BasePage {
     Locator nameInput;
     Locator textareaInput;
 
-    Page page;
 
-    public ProfilePage(Page page) {
-        this.page = page;
+
+    public ProfilePage() {
+
         profilePageTitle = page.locator("//div/h1");
         uploadPictureBtn = page.locator("//div[@data-component='avatar-editor']//label/span/input");
         applyBtn = page.locator("//div/button/span[contains(text(),'Apply')]");
