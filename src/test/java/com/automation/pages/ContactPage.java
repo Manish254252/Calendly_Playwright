@@ -1,5 +1,6 @@
 package com.automation.pages;
 
+import com.automation.utils.ConfigReader;
 import com.automation.utils.ConfigWriter;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -27,7 +28,7 @@ public class ContactPage extends BasePage {
     String timezone_XPATH = "//div[text()='%s']";
     String nameAndEmail_XPATH = "(//tr[@class='r15404cu'])[%s]/td[%s]//div[text()]";
     String actions_XPATH = "(//tr[@class='r15404cu'])[%s]/td[6]//button[@aria-label='Contact Actions Button']";
-
+    List<Locator> contactList;
 
 
     public ContactPage() {
@@ -42,7 +43,7 @@ public class ContactPage extends BasePage {
         phoneNumber = page.locator("(//form//input)[4]");
         saveContactBtn = page.locator("//span[text()='Save contact']");
 
-        contactNameAfterSave = page.locator("//tbody//tr/td[2]/div//div/button/following-sibling::div").all().getLast();
+
         contactProfileCloseButton = page.locator("#contact_profile_close_button");
         rows = page.locator("//tr[@class='r15404cu']").all();
         editBtn = page.locator("//div[text()='Edit']");
@@ -81,7 +82,6 @@ public class ContactPage extends BasePage {
     public void enterEmail(String data) {
         String emailRandom = getRandomEmail();
         ConfigWriter.writeToPropertiesFile(data, emailRandom);
-        System.out.println(emailRandom);
         email.fill(emailRandom);
     }
 
@@ -91,7 +91,6 @@ public class ContactPage extends BasePage {
     }
 
     public void enterPhoneNumber(String data) {
-        System.out.println(data);
         phoneNumber.fill(data);
     }
 
@@ -101,10 +100,18 @@ public class ContactPage extends BasePage {
 
     public boolean isContactSaved(String contactName) {
         clickOnContactProfileCloseButton();
+
         page.waitForTimeout(3000);
-        System.out.println(contactNameAfterSave.innerText()+"text content");
-        System.out.println(contactNameAfterSave.innerText().contains(contactName));
-        return contactNameAfterSave.innerText().contains(contactName);
+        contactList = page.locator("//tbody//tr/td[2]/div//div/button/following-sibling::div").all();
+
+        for (Locator x : contactList) {
+
+            if (x.innerText().equalsIgnoreCase(contactName)) {
+
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeSpecifiedContact(String name, String email) {
