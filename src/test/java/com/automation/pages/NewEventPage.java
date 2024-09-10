@@ -2,6 +2,8 @@ package com.automation.pages;
 
 import com.automation.utils.ConfigReader;
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 
 import java.util.List;
@@ -40,7 +42,8 @@ public class NewEventPage extends BasePage {
     }
 
     public boolean isEventPageDisplayed() {
-        return eventPageTitle.isVisible() && eventTypeList.get(0).isVisible();
+        page.waitForSelector("//h1[contains(text(), 'Create New Event')]",new Page.WaitForSelectorOptions().setState(WaitForSelectorState.VISIBLE));
+        return eventPageTitle.isVisible() ;
     }
 
     public void clickOnTheEventType(String eventType) {
@@ -67,6 +70,7 @@ public class NewEventPage extends BasePage {
     }
 
     public boolean isEventReadyMsgIsDisplayed() {
+        page.waitForSelector("//h1[contains(text(), 'Your event type is ready!')]",new Page.WaitForSelectorOptions().setState(WaitForSelectorState.VISIBLE));
         return confirmationDialogueBox.isVisible();
     }
 

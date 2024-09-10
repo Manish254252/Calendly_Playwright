@@ -14,6 +14,7 @@ public class NewEventSteps {
 
     @Then("verify new event type page is displayed")
     public void verifyNewEventTypePageIsDisplayed() {
+
         Assert.assertTrue(newEventPage.isEventPageDisplayed());
     }
 

@@ -3,6 +3,7 @@ package com.automation.pages;
 import com.automation.utils.ConfigReader;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class InvitePage extends BasePage {
     }
 
     public boolean isInvitationSent() {
+        page.waitForSelector("//div[@data-component='main']//h1[contains(text(), 'All done')]",new Page.WaitForSelectorOptions().setState(WaitForSelectorState.VISIBLE));
         return confirmationMsg.isVisible();
     }
 
